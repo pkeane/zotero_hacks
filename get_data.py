@@ -13,8 +13,7 @@ def make_zotero_db(current_path):
     shutil.copyfile(current_path,new_path)
     return new_path
 
-def find_zotero_db():
-    dir = '../Library/Application Support/Firefox'
+def find_zotero_db(dir):
     for dirname, dirnames, filenames in os.walk(dir):
         for filename in filenames:
             if ('zotero.sqlite' == filename):
@@ -132,14 +131,22 @@ def post_item(item_json):
 
 
 if __name__=="__main__":
+    ZOTERO_DIR = '../Library/Application Support/Firefox'
+    ZOTERO_DIR = '../.mozilla'
     already_uploaded = {}
     try:
         f = open('checklist.json','r')
-        already_uploaded = f.read()
+        already_uploaded = json.load(f)
         f.close()
     except:
         pass
-    db_file = make_zotero_db(find_zotero_db())
+    #print type( already_uploaded)
+    #sys.exit()
+    zpath = find_zotero_db(ZOTERO_DIR)
+    if not zpath:
+        print "No Zotero found.  Is ZOTERO_DIR set correctly?"
+        sys.exit()
+    db_file = make_zotero_db(zpath)
     for item in get_items(db_file):
         print item['item_type'],item['key'],item['title']
         if item['key'] in already_uploaded:
@@ -148,5 +155,5 @@ if __name__=="__main__":
             already_uploaded[item['key']] = item['title']
             print post_item(json.dumps(item))
     f = open('checklist.json','w')
-    f.write(json.dumps(already_uploaded))
+    json.dump(already_uploaded,f)
     f.close()
