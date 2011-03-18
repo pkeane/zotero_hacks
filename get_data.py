@@ -23,10 +23,24 @@ for item_row in items_c:
     key = itemID = itemTypeID = ''
     (key,itemID,itemTypeID) = item_row
     print key
-    creators_c = conn.cursor()
+    item_creators_c = conn.cursor()
     sql = "SELECT creatorID,creatorTypeID FROM itemCreators WHERE itemID = ?"
-    creators_c.execute(sql,(itemID,))
-    for creator_row in creators_c:
-        print creator_row
+    item_creators_c.execute(sql,(itemID,))
+    for creator_row in item_creators_c:
+        creatorID = creatorTypeID = creatorDataID = ''
+        (creatorID,creatorTypeID) = creator_row
+        creators_c = conn.cursor()
+        sql = "SELECT creatorDataID FROM creators WHERE creatorID = ?"
+        creators_c.execute(sql,(creatorID,))
+        (creatorDataID,) = creators_c.fetchone()
+        creatordata_c = conn.cursor()
+        sql = "SELECT firstName,lastName FROM creatorData WHERE creatorDataID = ?"
+        creatordata_c.execute(sql,(creatorDataID,)) 
+        for creator_data in creatordata_c:
+            firstName = lastName = ''
+            (firstName,lastName) = creator_data
+            print firstName,lastName
+
+
 
 
