@@ -1,6 +1,9 @@
 import base64
 import httplib
-import json
+try:
+    import simplejson
+except:
+    import json
 import sqlite3
 import os
 import shutil
@@ -146,7 +149,7 @@ def post_item(item_json):
 
 if __name__=="__main__":
     ZOTERO_DIR = '../Library/Application Support/Firefox'
-    ZOTERO_DIR = '../.mozilla'
+#    ZOTERO_DIR = '../.mozilla'
     already_uploaded = {}
     try:
         f = open('checklist.json','r')
@@ -154,7 +157,7 @@ if __name__=="__main__":
         f.close()
     except:
         pass
-    #print type( already_uploaded)
+    #print already_uploaded
     #sys.exit()
     zpath = find_zotero_db(ZOTERO_DIR)
     if not zpath:
