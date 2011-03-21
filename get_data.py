@@ -33,6 +33,7 @@ def get_items(db_file):
         key = itemID = itemTypeID = ''
         (key,itemID,itemTypeID) = item_row
         item_meta['key'].append(key)
+
         item_creators_c = conn.cursor()
         sql = "SELECT creatorID,creatorTypeID, orderIndex FROM itemCreators WHERE itemID = ?"
         item_creators_c.execute(sql,(itemID,))
@@ -55,6 +56,19 @@ def get_items(db_file):
                 item_meta['creator'].append(lastName+' '+firstName)
                 item_meta['creator'+str(orderIndex)].append(lastName+' '+firstName)
     
+        item_collections_c = conn.cursor()
+        sql = "SELECT collectionID FROM collectionItems WHERE itemID = ?"
+        item_collections_c.execute(sql,(itemID,))
+        item_meta['folder'] = [] 
+        for collection_row in item_collections_c:
+            collectionID = ''
+            (collectionID,) = collection_row
+            collections_c = conn.cursor()
+            sql = "SELECT collectionName FROM collections WHERE collectionID = ?"
+            collections_c.execute(sql,(collectionID,))
+            (collectionName,) = collections_c.fetchone()
+            item_meta['folder'].append(collectionName) 
+
         item_data_c = conn.cursor()
         sql = "SELECT fieldID,valueID FROM itemData WHERE itemID = ?"
         item_data_c.execute(sql,(itemID,))
