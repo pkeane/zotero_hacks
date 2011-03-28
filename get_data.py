@@ -148,8 +148,8 @@ def post_item(item_json):
 
 
 if __name__=="__main__":
-    ZOTERO_DIR = '../Library/Application Support/Firefox'
-#    ZOTERO_DIR = '../.mozilla'
+    #ZOTERO_DIR = '../Library/Application Support/Firefox'
+    ZOTERO_DIR = '../.mozilla'
     already_uploaded = {}
     try:
         f = open('checklist.json','r')
