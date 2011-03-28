@@ -56,6 +56,7 @@ class ScrolledText(Frame):
     def addtext(self,text):
         self.text.insert(END,text)
         self.text.insert(END,"\n")
+        self.update_idletasks()
         self.text.focus()                                # save user a click
         self.text.yview_pickplace("end")
     def settext(self, text='', file=None):
@@ -71,6 +72,7 @@ class ScrolledText(Frame):
 class Application():
     def __init__(self, master):
 
+        self.eid = ''
         self.root = master
         frame = Frame(master)
         frame.pack(fill=BOTH,padx=2,pady=2)
@@ -109,8 +111,10 @@ class Application():
         pass
 
     def upload(self):
-        #ZOTERO_DIR = '../Library/Application Support/Firefox'
-        ZOTERO_DIR = '../.mozilla'
+        if not self.eid:
+            self.login_user()
+        ZOTERO_DIR = '../Library/Application Support/Firefox'
+        #ZOTERO_DIR = '../.mozilla'
         already_uploaded = {}
         try:
             f = open('checklist.json','r')
