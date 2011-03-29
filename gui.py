@@ -165,52 +165,8 @@ class Application():
         else:
             return False
 
-    def postFile(self,path,filename,DASE_HOST,coll,mime_type,u,p):
-        auth = 'Basic ' + string.strip(base64.encodestring(u + ':' + p))
-        f = file(path.rstrip('/')+'/'+filename, "rb")
-        self.body = f.read()                                                                     
-        h = self.getHTTP()
-        headers = {
-            "Content-Type":mime_type,
-            "Content-Length":str(len(self.body)),
-            "Authorization":auth,
-            "Title":filename,
-        };
-
-        md5sum = md5.new(self.body).hexdigest()
-        if not self.checkMd5(coll,md5sum):
-            h.request("POST",DASE_BASE.rstrip('/')+'/media/'+coll,self.body,headers)
-            r = h.getresponse()
-            return (r.status)
-
-    def getHTTP(self):
-        if ('https' == PROTOCOL):
-            h = httplib.HTTPSConnection(DASE_HOST,443)
-        else:
-            h = httplib.HTTPConnection(DASE_HOST,80)
-        return h
-
     def abort_upload(self):
         self.root.destroy()
-
-    def upload_files(self):
-        self.write('processing files...')
-        if not self.user:
-            self.write('ERROR: please Login\n',True)
-            return
-        if not self.collection:
-            self.write('ERROR: please select a collection\n',True)
-            return
-        for file in self.files:
-            (mime_type,enc) = mimetypes.guess_type(self.dirpath+file)
-            self.write("uploading "+file)
-            self.frame.update_idletasks()
-            status = self.postFile(self.dirpath,file,DASE_HOST,self.collection,mime_type,self.user,self.password)
-            if (201 == status):
-                self.write("server says... "+str(status)+" OK!!\n")
-            else:
-                self.write("problem with "+file+"("+str(status)+")\n")
-            self.frame.update_idletasks()
 
         #FROM get_data.py
 
